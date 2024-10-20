@@ -70,7 +70,7 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # Redirect user to home page
-        flash("Login successful!")
+        flash(f"Logged in as {rows[0]['username']}!")
         return redirect("/")
 
     else:
@@ -91,9 +91,37 @@ def logout():
     flash("Logged out successfully!")
     return redirect("/")
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    return 'TODO'
+    if request.method == 'POST':
+        # Look for invalid inputs
+        if not request.form.get("username"):
+            flash("Username is required!")
+            return redirect("/register")
+        elif not request.form.get('password'):
+            flash("Password is required!")
+            return redirect("/register")
+        elif not request.form.get('confirmation'):
+            flash("Password confirmation is required!")
+            return redirect("/register")
+        elif request.form.get('password') != request.form.get('confirmation'):
+            flash("Password & password confirmation must be identical!")
+            return redirect("/register")
+        # Look for duplicate username
+        if db.execute("SELECT * FROM users WHERE username = ?", request.form.get('username')):
+            flash("Username already exists. Please select a different username!")
+            return redirect("/register")
+        # Password hashing and adding user to database
+        pw = generate_password_hash(request.form.get('password'))
+        db.execute("INSERT INTO users (username, hash) VALUES (?, ?)",
+                   request.form.get('username'), pw)
+        # Logging the user
+        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        session["user_id"] = rows[0]["id"]
+        flash(f"Logged in as {rows[0]['username']}!")
+        return redirect("/")
+    else:
+        return render_template('register.html')
 
 @app.route("/add_project")
 def add_project():
