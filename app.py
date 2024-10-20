@@ -3,8 +3,112 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from helpers import login_required
+
+# Configure application
 app = Flask(__name__)
 
+# # Configure session to use filesystem (instead of signed cookies)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+# Configure database
+db = SQL("sqlite:///ltt.db")
+
+# @app.after_request
+def after_request(response):
+    """Ensure responses aren't cached"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
+
 @app.route("/")
+@login_required
 def index():
-    return "hello world"
+    return render_template("index.html")
+
+@app.route("/login", methods=["POST", "GET"])
+def login():
+
+    #Redirect logged in user
+    if session.get("user_id"):
+        flash("Please logout first!")
+        return redirect("/")
+
+    # via POST
+    if request.method == "POST":
+
+        # Clear session data
+        session.clear()
+
+        # Ensure username was submitted
+        if not request.form.get("username"):
+            flash("Username is required!")
+            return redirect("/login")
+
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            flash("Password is required!")
+            return redirect("/login")
+
+        # Query database for username
+        rows = db.execute(
+            "SELECT * FROM users WHERE username = ?", request.form.get("username")
+        )
+
+        # Ensure username exists and password is correct
+        if len(rows) != 1 or not check_password_hash(
+            rows[0]["hash"], request.form.get("password")
+        ):
+            flash("Username and/or password is invalid!")
+            return redirect("/login")
+
+        # Remember which user has logged in
+        session["user_id"] = rows[0]["id"]
+
+        # Redirect user to home page
+        flash("Login successful!")
+        return redirect("/")
+
+    else:
+        return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+
+    #Handle users not logged in
+    if not session.get("user_id"):
+        flash("You are not logged in!")
+        return redirect("/")
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to login form
+    flash("Logged out successfully!")
+    return redirect("/")
+
+@app.route("/register")
+def register():
+    return 'TODO'
+
+@app.route("/add_project")
+def add_project():
+    return 'TODO'
+
+@app.route("/add_lsp")
+def add_lsp():
+    return 'TODO'
+
+@app.route("/add_account")
+def add_account():
+    return 'TODO'
+
+
+
+# Debug mode
+if __name__ == "__main__":
+    app.run(debug=True)
