@@ -4,7 +4,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import login_required
+from helpers import login_required, add_entity
 
 # Configure application
 app = Flask(__name__)
@@ -78,12 +78,8 @@ def login():
         return render_template("login.html")
 
 @app.route("/logout")
+@login_required
 def logout():
-
-    #Handle users not logged in
-    if not session.get("user_id"):
-        flash("You are not logged in!")
-        return redirect("/")
 
     # Forget any user_id
     session.clear()
@@ -125,40 +121,23 @@ def register():
         return render_template('register.html')
 
 @app.route("/add_project", methods=["GET", "POST"])
+@login_required
 def add_project():
     return 'TODO'
 
 @app.route("/add_lsp", methods=["GET", "POST"])
+@login_required
 def add_lsp():
     if request.method == "POST":
-        user_id = session["user_id"]
-        lsp_name = request.form.get("lspname")
-        if not lsp_name:
-            flash("Name is required!")
-            return redirect("/add_lsp")
-        elif db.execute("SELECT lsp_name FROM lsps WHERE LOWER(lsp_name) = ? AND user_id = ?", lsp_name.lower(), user_id):
-            flash("This LSP already exists!")
-            return redirect("/add_lsp")
-        db.execute("INSERT INTO lsps (user_id, lsp_name) VALUES (?, ?)", user_id, lsp_name)
-        flash("LSP added!")
-        return redirect("/")
+        return add_entity("lspname", "lsps", "lsp_name", "/add_lsp", db)
     else:
         return render_template("add_lsp.html")
 
 @app.route("/add_account", methods=["GET", "POST"])
+@login_required
 def add_account():
     if request.method == "POST":
-        user_id = session["user_id"]
-        account_name = request.form.get("accountname")
-        if not account_name:
-            flash("Name is required!")
-            return redirect("/add_account")
-        elif db.execute("SELECT account_name FROM accounts WHERE LOWER(account_name) = ? AND user_id = ?", account_name.lower(), user_id):
-            flash("This account already exists!")
-            return redirect("/add_account")
-        db.execute("INSERT INTO accounts (user_id, account_name) VALUES (?, ?)", user_id, account_name)
-        flash("Account added!")
-        return redirect("/")
+        return add_entity("accountname", "accounts", "account_name", "/add_account", db)
     else:
         return render_template("add_account.html")
 
