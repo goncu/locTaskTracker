@@ -123,7 +123,10 @@ def register():
 @app.route("/add_project", methods=["GET", "POST"])
 @login_required
 def add_project():
-    return 'TODO'
+    if request.method == "POST":
+        return "TODO"
+    else:
+        return render_template("add_project.html")
 
 @app.route("/add_lsp", methods=["GET", "POST"])
 @login_required

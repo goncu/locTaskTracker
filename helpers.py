@@ -32,3 +32,5 @@ def add_entity(entity_name, table_name, column_name, redirect_route, db):
     
     flash("Successfully added!")
     return redirect("/")
+
+# TODO weighted_wc helper function
