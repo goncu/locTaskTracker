@@ -144,10 +144,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Ignore SQLite and other database files
-*.sqlite3
-*.db
-
 # PyCharm
 #  JetBrains specific template is maintainted in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore

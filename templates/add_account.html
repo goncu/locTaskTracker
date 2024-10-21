@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Account
+{% endblock %}
+
+{% block main %}
+    <h1 class="display-5 mb-5">Add Account</h1>
+    <form action="/add_account" method="post">
+        <div class="mb-5"><input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="accountname" placeholder="Enter account name" type="text"></div>
+        <button class="btn btn-primary" type="submit">Add</button>
+    </form>
+{% endblock %}
