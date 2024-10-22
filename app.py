@@ -124,6 +124,7 @@ def register():
 @login_required
 def add_project():
     if request.method == "POST":
+        print(request.form.get('newwords'))
         return "TODO"
     else:
         return render_template("add_project.html")
