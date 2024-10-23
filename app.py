@@ -4,7 +4,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import login_required, add_entity
+from helpers import add_entity, login_required
 
 # Configure application
 app = Flask(__name__)
@@ -124,17 +124,64 @@ def register():
 @login_required
 def add_project():
     user_id = session["user_id"]
+    today = datetime.today().strftime('%Y-%m-%d')
     if request.method == "POST":
+        # Storing form data into variables
         lspname = request.form.get("lspname")
         accountname = request.form.get("accountname")
+        projectname = request.form.get("projectname")
+        date = request.form.get("date")
+        time = request.form.get("time")
+        date_time = f"{date} {time}"
+        tasktype  = request.form.get("tasktype")     
+        newwords = request.form.get("newwords")
+        highfuzzy = request.form.get("highfuzzy")
+        lowfuzzy = request.form.get("lowfuzzy")
+        hundredpercent = request.form.get("hundredpercent")
+        hourlywork = request.form.get("hourlywork")
+        weighted_words = round((int(newwords) if tasktype != "mtpe" else int(newwords) * 0.8) + (int(highfuzzy) * 0.4) + (int(lowfuzzy) * 0.6) + (int(hundredpercent) * 0.25) + (float(hourlywork) * 250))
+        
+        #Checking input validity
+        if lspname == "none":
+            flash("Please select an LSP!")
+            return redirect("/add_project")
+        if  accountname == "none":
+            flash("Please select an account!")
+            return redirect("/add_project")
+        if tasktype == "none":
+            flash("Please select a task type!")
+            return redirect("/add_project")
+        if not projectname:
+            flash("Please enter a project name!")
+            return redirect("/add_project")
+        if not date:
+            flash("Please select a date!")
+            return redirect("/add_project")
+        if not time:
+            flash("Please select a time!")
+            return redirect("/add_project")
+        for num in [newwords, highfuzzy, lowfuzzy, hundredpercent, hourlywork]:
+            try:
+                val = int(num)
+                if val < 0:
+                    flash("Please enter a valid number!")
+                    return redirect("/add_project")
+            except ValueError:
+                flash("Please enter a valid number!")
+                return redirect("/add_project")
+
+# TODO: add to db
+
+
+
     else:
         lsps = db.execute("SELECT lsp_name FROM  lsps WHERE user_id = ?", user_id)
         accounts = db.execute("SELECT account_name FROM  accounts WHERE user_id = ?", user_id)
         if not lsps or not accounts:
             flash("Add some LSPs/accounts first!")
-            return render_template("add_project.html", lsps=lsps, accounts=accounts)
+            return render_template("add_project.html", lsps=lsps, accounts=accounts, today=today)
         else:
-            return render_template("add_project.html", lsps=lsps, accounts=accounts)
+            return render_template("add_project.html", lsps=lsps, accounts=accounts, today=today)
 
 @app.route("/add_lsp", methods=["GET", "POST"])
 @login_required
