@@ -123,11 +123,18 @@ def register():
 @app.route("/add_project", methods=["GET", "POST"])
 @login_required
 def add_project():
+    user_id = session["user_id"]
     if request.method == "POST":
-        print(request.form.get('newwords'))
-        return "TODO"
+        lspname = request.form.get("lspname")
+        accountname = request.form.get("accountname")
     else:
-        return render_template("add_project.html")
+        lsps = db.execute("SELECT lsp_name FROM  lsps WHERE user_id = ?", user_id)
+        accounts = db.execute("SELECT account_name FROM  accounts WHERE user_id = ?", user_id)
+        if not lsps or not accounts:
+            flash("Add some LSPs/accounts first!")
+            return render_template("add_project.html", lsps=lsps, accounts=accounts)
+        else:
+            return render_template("add_project.html", lsps=lsps, accounts=accounts)
 
 @app.route("/add_lsp", methods=["GET", "POST"])
 @login_required
