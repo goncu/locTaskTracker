@@ -139,7 +139,10 @@ def add_project():
         lowfuzzy = request.form.get("lowfuzzy")
         hundredpercent = request.form.get("hundredpercent")
         hourlywork = request.form.get("hourlywork")
-        weighted_words = round((int(newwords) if tasktype != "mtpe" else int(newwords) * 0.8) + (int(highfuzzy) * 0.4) + (int(lowfuzzy) * 0.6) + (int(hundredpercent) * 0.25) + (float(hourlywork) * 250))
+        if tasktype == "editing":
+            weighted_words = int(newwords) + int(highfuzzy) + int(lowfuzzy) + int(hundredpercent)
+        else:
+            weighted_words = round((int(newwords) if tasktype != "mtpe" else int(newwords) * 0.8) + (int(highfuzzy) * 0.4) + (int(lowfuzzy) * 0.6) + (int(hundredpercent) * 0.25))
         
         #Checking input validity
         if lspname == "none":
@@ -169,7 +172,9 @@ def add_project():
             except ValueError:
                 flash("Please enter a valid number!")
                 return redirect("/add_project")
-
+        db.execute("INSERT INTO projects (user_id, lsp_name, account_name, project_name, date_time, task_type, new_words, high_fuzzy, low_fuzzy, hundred_percent, hourlywork, weighted_words, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", user_id, lspname, accountname, projectname, date_time, tasktype, newwords, highfuzzy, lowfuzzy, hundredpercent, hourlywork, weighted_words, 'no')
+        flash("Project added!")
+        return redirect("/")
 # TODO: add to db
 
 
