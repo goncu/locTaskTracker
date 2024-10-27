@@ -29,7 +29,9 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    user_id = session["user_id"]
+    projects = db.execute("SELECT * FROM projects WHERE user_id = ?  AND completed = ?", user_id, 'no')
+    return render_template("index.html", projects=projects)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -204,6 +206,18 @@ def add_account():
     else:
         return render_template("add_account.html")
 
+@app.route("/delete", methods=["POST"])
+@login_required
+def delete():
+    project_id = request.form.get("project_id")
+    user_id = request.form.get("user_id")
+    if project_id and int(user_id) == session["user_id"]:
+        db.execute("DELETE FROM projects WHERE id = ? AND user_id = ?", project_id, user_id)
+        flash("Project deleted successfully!")
+    else:
+        flash("Project could not be deleted!")
+
+    return redirect("/")
 
 # Debug mode
 if __name__ == "__main__":

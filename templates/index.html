@@ -5,5 +5,79 @@
 {% endblock %}
 
 {% block main %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="text-start">Project Name</th>
+            <th class="text-end">Task Type</th>
+            <th class="text-end">Weighted Word Count</th>
+            <th class="text-end">Due Date</th>
+            <th class="text-end">LSP</th>
+            <th class="text-end">Account</th>
+            <th class="text-end">Actions</th>
+        </tr>
+        {% for project in projects %}
+        <tr>
+            <td class="text-start">{{ project.project_name }}</td>
+            <td class="text-end">
+                {% if project.task_type == 'mtpe' %}
+                    {{ project.task_type | upper }}
+                {% else %}
+                    {{ project.task_type | capitalize }}
+                {% endif %}
+        </td>
+            <td class="text-end">{% if project.hourlywork != 0 %}
+                {{ project.hourlywork }} hours
+                {% else %}
+                <a data-bs-toggle="collapse" href="#collapse{{ project.id }}Detailed" role="button" aria-expanded="false" aria-controls="collapse{{ project.id }}Detailed">
+                    {{ project.weighted_words }} words
+                </a>              
+                {% endif %}
+            </td>
+            <td class="text-end">{{ project.date_time }}</td>
+            <td class="text-end">{{ project.lsp_name }}</td>
+            <td class="text-end">{{ project.account_name }}</td>
+            <td class="text-end"><div class="btn-group" role="group" aria-label="Actions">
+                <button type="button" class="btn btn-outline-primary">Update</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#deleteProject{{ project.id }}">Delete</button>
+                <div class="modal fade" id="deleteProject{{ project.id }}" tabindex="-1" aria-labelledby="deleteProject{{ project.id }}Label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="deleteProject{{ project.id }}Label">Delete project</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-start">
+                                Are you sure you want to delete project {{ project.project_name }}?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <!-- Form to submit the deletion -->
+                                <form action="/delete" method="post">
+                                    <input type="hidden" name="project_id" value="{{ project.id }}">
+                                    <input type="hidden" name="user_id" value="{{ project.user_id }}">
+                                    <button type="submit" class="btn btn-primary">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  
+                <button type="button" class="btn btn-outline-primary">Complete</button>
+              </div></td>
+        </tr>
+        <tr class="collapse" id="collapse{{ project.id }}Detailed">
+            <td colspan="7">
+                <div class="container d-flex flex-column justify-content-center">
+                    <p><b>New</b>: {{ project.new_words }} words</p>                    
+                    <p><b>85-99%</b>: {{ project.high_fuzzy }} words</p>                    
+                    <p><b>75-84%</b>: {{ project.low_fuzzy }} words</p>                    
+                    <p><b>100%</b>: {{ project.hundred_percent }} words</p>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </thead>
+</table>
     
 {% endblock %}
