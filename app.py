@@ -4,7 +4,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import add_entity, login_required
+from helpers import add_entity, login_required, sorting
 
 # Configure application
 app = Flask(__name__)
@@ -30,7 +30,7 @@ def after_request(response):
 @login_required
 def index():
     user_id = session["user_id"]
-    projects = db.execute("SELECT * FROM projects WHERE user_id = ?  AND completed = ?", user_id, 'no')
+    projects = db.execute("SELECT * FROM projects WHERE user_id = ?  AND completed = ? ORDER BY date_time", user_id, 'no')
     return render_template("index.html", projects=projects)
 
 @app.route("/login", methods=["POST", "GET"])
@@ -218,6 +218,37 @@ def delete():
         flash("Project could not be deleted!")
 
     return redirect("/")
+
+@app.route("/complete", methods=["POST"])
+@login_required
+def complete():
+    project_id = request.form.get("project_id")
+    user_id = request.form.get("user_id")
+    if project_id and int(user_id) == session["user_id"]:
+        db.execute("UPDATE projects SET completed = ? WHERE id = ? AND user_id = ?", "yes", project_id, user_id)
+        flash("Project successfully marked as done!")
+    else:
+        flash("Project could not be marked as done!")
+
+    return redirect("/")
+
+@app.route("/sort")
+@login_required
+def sort():
+    criteria = request.args.get("sort")
+    direction = request.args.get("direction")
+    user_id = session["user_id"]
+    if criteria == "none":
+        flash("No sorting criteria selected!")
+        return redirect("/")
+    else:
+        if criteria == "weighted_words":
+            projects = db.execute("SELECT * FROM projects WHERE user_id = ?  AND completed = ?" + sorting(criteria, direction, "hourlywork", direction), user_id, 'no')
+        else:
+            projects = db.execute("SELECT * FROM projects WHERE user_id = ?  AND completed = ?" + sorting(criteria, direction), user_id, 'no')
+        
+    return render_template("index.html", projects=projects)
+        
 
 # Debug mode
 if __name__ == "__main__":

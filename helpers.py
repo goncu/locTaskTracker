@@ -33,5 +33,11 @@ def add_entity(entity_name, table_name, column_name, redirect_route, db):
     flash("Successfully added!")
     return redirect("/")
 
+def sorting(a, b, c=None, d=None):
+    if c and d:
+        return f" ORDER BY {a} {b}, {c} {d}"
+    else:
+        return f" ORDER BY {a} {b}"
+
     
 # TODO weighted_wc helper function

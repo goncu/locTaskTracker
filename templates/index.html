@@ -39,32 +39,10 @@
             <td class="text-end">{{ project.account_name }}</td>
             <td class="text-end"><div class="btn-group" role="group" aria-label="Actions">
                 <button type="button" class="btn btn-outline-primary">Update</button>
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#deleteProject{{ project.id }}">Delete</button>
-                <div class="modal fade" id="deleteProject{{ project.id }}" tabindex="-1" aria-labelledby="deleteProject{{ project.id }}Label" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="deleteProject{{ project.id }}Label">Delete project</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body text-start">
-                                Are you sure you want to delete project {{ project.project_name }}?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <!-- Form to submit the deletion -->
-                                <form action="/delete" method="post">
-                                    <input type="hidden" name="project_id" value="{{ project.id }}">
-                                    <input type="hidden" name="user_id" value="{{ project.user_id }}">
-                                    <button type="submit" class="btn btn-primary">Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                  
-                <button type="button" class="btn btn-outline-primary">Complete</button>
-              </div></td>
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#deleteProject{{ project.id }}">Delete</button>                                  
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#completeProject{{ project.id }}">Complete</button>
+              </div>
+            </td>
         </tr>
         <tr class="collapse" id="collapse{{ project.id }}Detailed">
             <td colspan="7">
@@ -76,8 +54,75 @@
                 </div>
             </td>
         </tr>
+
+        <!-- Modal for deleting project -->
+        <div class="modal fade" id="deleteProject{{ project.id }}" tabindex="-1" aria-labelledby="deleteProject{{ project.id }}Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="deleteProject{{ project.id }}Label">Delete project</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-start">
+                        Are you sure you want to delete project {{ project.project_name }}?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- Form to submit the deletion -->
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="project_id" value="{{ project.id }}">
+                            <input type="hidden" name="user_id" value="{{ project.user_id }}">
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for completing project -->
+        <div class="modal fade" id="completeProject{{ project.id }}" tabindex="-1" aria-labelledby="completeProject{{ project.id }}Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="completeProject{{ project.id }}Label">Complete project</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-start">
+                        Are you sure you want to mark project {{ project.project_name }} as done?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- Form to submit the completion -->
+                        <form action="/complete" method="post">
+                            <input type="hidden" name="project_id" value="{{ project.id }}">
+                            <input type="hidden" name="user_id" value="{{ project.user_id }}">
+                            <button type="submit" class="btn btn-primary">Complete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {% endfor %}
     </thead>
 </table>
+<form class="text-end" action="/sort">
+    <select class="form-select w-auto d-inline align-middle" name="sort" id="sort">
+        <option value="none">Sort by</option>
+        <option value="project_name">Name</option>
+        <option value="task_type">Task type</option>
+        <option value="weighted_words">Word count</option>
+        <option value="date_time">Due date</option>
+        <option value="lsp_name">LSP</option>
+        <option value="account_name">Account</option>
+    </select>
+    <select class="form-select w-auto d-inline align-middle" name="direction" id="direction">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select>
+    <button type="submit" class="btn btn-primary d-inline align-middle">Sort</button>
+</form>
+
+
     
 {% endblock %}
