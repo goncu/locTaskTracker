@@ -37,11 +37,13 @@
             <td class="text-end">{{ project.date_time }}</td>
             <td class="text-end">{{ project.lsp_name }}</td>
             <td class="text-end">{{ project.account_name }}</td>
-            <td class="text-end"><div class="btn-group" role="group" aria-label="Actions">
-                <button type="button" class="btn btn-outline-primary">Update</button>
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#deleteProject{{ project.id }}">Delete</button>                                  
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#completeProject{{ project.id }}">Complete</button>
-              </div>
+            <td class="text-end">
+                <form class="d-inline" action="/edit_project">
+                    <input type="hidden" name="project_id" value="{{ project.id }}">
+                    <button type="submit" class="btn btn-outline-primary btn-sm">Edit</button>
+                </form>
+                <button type="button" class="btn btn-outline-primary btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteProject{{ project.id }}">Delete</button>                                  
+                <button type="button" class="btn btn-outline-primary btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#completeProject{{ project.id }}">Complete</button>
             </td>
         </tr>
         <tr class="collapse" id="collapse{{ project.id }}Detailed">

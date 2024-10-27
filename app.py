@@ -177,10 +177,6 @@ def add_project():
         db.execute("INSERT INTO projects (user_id, lsp_name, account_name, project_name, date_time, task_type, new_words, high_fuzzy, low_fuzzy, hundred_percent, hourlywork, weighted_words, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", user_id, lspname, accountname, projectname, date_time, tasktype, newwords, highfuzzy, lowfuzzy, hundredpercent, hourlywork, weighted_words, 'no')
         flash("Project added!")
         return redirect("/")
-# TODO: add to db
-
-
-
     else:
         lsps = db.execute("SELECT lsp_name FROM  lsps WHERE user_id = ?", user_id)
         accounts = db.execute("SELECT account_name FROM  accounts WHERE user_id = ?", user_id)
@@ -249,6 +245,73 @@ def sort():
         
     return render_template("index.html", projects=projects)
         
+@app.route("/edit_project", methods=["GET", "POST"])
+@login_required
+def edit_project():
+    if request.method == "POST":
+        # Storing form data into variables
+        projectId = request.form.get("project_id")
+        lspname = request.form.get("lspname")
+        accountname = request.form.get("accountname")
+        projectname = request.form.get("projectname")
+        date = request.form.get("date")
+        time = request.form.get("time")
+        date_time = f"{date} {time}"
+        tasktype  = request.form.get("tasktype")     
+        newwords = request.form.get("newwords")
+        highfuzzy = request.form.get("highfuzzy")
+        lowfuzzy = request.form.get("lowfuzzy")
+        hundredpercent = request.form.get("hundredpercent")
+        hourlywork = request.form.get("hourlywork")
+
+        if tasktype == "editing":
+            weighted_words = int(newwords) + int(highfuzzy) + int(lowfuzzy) + int(hundredpercent)
+        else:
+            weighted_words = round((int(newwords) if tasktype != "mtpe" else int(newwords) * 0.8) + (int(highfuzzy) * 0.4) + (int(lowfuzzy) * 0.6) + (int(hundredpercent) * 0.25))
+        
+        #Checking input validity
+        if lspname == "none":
+            flash("Please select an LSP!")
+            return redirect("/add_project")
+        if  accountname == "none":
+            flash("Please select an account!")
+            return redirect("/add_project")
+        if tasktype == "none":
+            flash("Please select a task type!")
+            return redirect("/add_project")
+        if not projectname:
+            flash("Please enter a project name!")
+            return redirect("/add_project")
+        if not date:
+            flash("Please select a date!")
+            return redirect("/add_project")
+        if not time:
+            flash("Please select a time!")
+            return redirect("/add_project")
+        for num in [newwords, highfuzzy, lowfuzzy, hundredpercent, hourlywork]:
+            try:
+                val = int(num)
+                if val < 0:
+                    flash("Please enter a valid number!")
+                    return redirect("/add_project")
+            except ValueError:
+                flash("Please enter a valid number!")
+                return redirect("/add_project")
+        db.execute("UPDATE projects SET lsp_name = ?, account_name = ?, project_name = ?, date_time = ?, task_type = ?, new_words = ?, high_fuzzy = ?, low_fuzzy = ?, hundred_percent = ?, hourlywork = ?, weighted_words = ?, completed = ? WHERE id = ?", lspname, accountname, projectname, date_time, tasktype, newwords, highfuzzy, lowfuzzy, hundredpercent, hourlywork, weighted_words, 'no', projectId)
+        flash("Project edited!")
+        return redirect("/")
+    else:
+        user_id = session["user_id"]
+        project_id = request.args.get("project_id")
+        project = db.execute("SELECT * FROM projects WHERE user_id = ? AND id = ?", user_id, project_id)[0]
+        date, time = project["date_time"].split(" ")
+        lsps = db.execute("SELECT lsp_name FROM  lsps WHERE user_id = ?", user_id)
+        accounts = db.execute("SELECT account_name FROM  accounts WHERE user_id = ?", user_id)
+        if project:
+            return render_template("edit_project.html", lsps=lsps, accounts=accounts, date=date, time=time, project=project)
+        else:
+            flash("Cannot edit this project!")
+            return redirect("/")
 
 # Debug mode
 if __name__ == "__main__":

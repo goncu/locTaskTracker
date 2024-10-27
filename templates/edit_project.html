@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit project
+{% endblock %}
+
+{% block main %}
+    <h1 class="display-4 mb-2">Edit project</h1>
+    <form  class="mt-3" action="/edit_project" method="post">
+        <input type="hidden" name="project_id" value = "{{ project.id }}">
+        <div class="mb-3"><h2 class="display-8">General info</h></div>
+        <div class="d-flex justify-content-between mb-3">
+            <div>
+                <label class="mb-2" for="lsp">Choose LSP:</label>
+                <select class="form-select" name="lspname" id="lsp">
+                <option value="none">Choose LSP</option>
+                {% for lsp in lsps %}
+                <option value="{{ lsp.lsp_name }}" {% if project.lsp_name == lsp.lsp_name %}selected{% endif %}>{{ lsp.lsp_name }}</option>
+                {%endfor%}
+                </select>
+            </div>
+            <div>
+                <label class="mb-2" for="account">Choose account:</label>
+                <select class="form-select" name="accountname" id="account">
+                <option value="none">Choose account</option>
+                {% for account in accounts %}
+                <option value="{{ account.account_name }}" {% if project.account_name == account.account_name %}selected{% endif %}>{{ account.account_name }}</option>
+                {%endfor%}
+                </select>
+            </div>
+            <div>
+                <label class="mb-2" for="project">Enter project's name:</label>
+                <input id="project"  autocomplete="off" autofocus class="form-control mx-auto w-auto" name="projectname" value="{{ project.project_name }}" type="text">
+            </div>
+            <div>
+                <label class="mb-2" for="date">Select deadline date:</label> 
+                <input class="form-control" type="date" id="date" name="date" value="{{ date }}">
+            </div>
+            <div>
+                <label class="mb-2" for="time">Enter deadline time: (24H)</label> 
+                <input class="form-control" type="time" id="time" name="time" value="{{ time }}">
+            </div>
+        </div>
+        <div class="container mt-5 mb-3"><h2 class="display-8">Project details</h></div>
+        <div class="container mb-3">
+            <div class="row mb-3">
+            <div class="col d-flex flex-column">
+                <label class="mb-2" for="tasktype">Choose task type:</label>
+                <select class="form-select" name="tasktype" id="tasktype">
+                <option value="none">Choose task type</option>
+                <option value="translation" {% if project.task_type == 'translation' %}selected{% endif %}>Translation</option>
+                <option value="editing" {% if project.task_type == 'editing' %}selected{% endif %}>Editing/Proofreading</option>
+                <option value="mtpe" {% if project.task_type == 'mtpe' %}selected{% endif %}>MTPE</option>
+                <option value="other" {% if project.task_type == 'other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="mb-2" for="newwords">New words:</label>
+                <input type="number" id="newwords" class="form-control" name="newwords" value="{{ project.new_words }}">
+            </div>
+            <div class="col">
+                <label class="mb-2" for="highfuzzy">85-99%:</label>
+                <input type="number" id="highfuzzy" class="form-control" name="highfuzzy" value="{{ project.high_fuzzy }}">
+            </div>
+            </div>
+            <div class="row mb-3">
+            <div class="col">
+                <label class="mb-2" for="lowfuzzy">75-84%:</label>
+                <input type="number" id="lowfuzzy" class="form-control" name="lowfuzzy" value="{{ project.low_fuzzy }}">
+            </div>
+            <div class="col">
+                <label class="mb-2" for="hundredpercent">100%/CM/PM:</label>
+                <input type="number" id="hundredpercent" class="form-control" name="hundredpercent" value="{{ project.hundred_percent }}">
+            </div>
+            <div class="col">
+                <label class="mb-2" for="hourlywork">Hourly work in hours:</label>
+                <input type="number" id="hourlywork" class="form-control" name="hourlywork" value="{{ project.hourlywork }}">
+            </div>
+        </div>
+        </div>            
+        <button class="mt-3 btn btn-primary" type="submit">Submit</button>
+    </form>
+{% endblock %}
