@@ -5,28 +5,30 @@
 {% endblock %}
 
 {% block main %}
-<table class="table table-striped">
+<table class="table table-striped-columns table-hover">
     <thead>
         <tr>
-            <th class="text-start">Project Name</th>
-            <th class="text-end">Task Type</th>
-            <th class="text-end">Weighted Word Count</th>
-            <th class="text-end">Due Date</th>
-            <th class="text-end">LSP</th>
-            <th class="text-end">Account</th>
-            <th class="text-end">Actions</th>
+            <th class="text-center">Project Name</th>
+            <th class="text-center">Task Type</th>
+            <th class="text-center">Weighted Volume</th>
+            <th class="text-center">Due Date</th>
+            <th class="text-center">LSP</th>
+            <th class="text-center">Account</th>
+            <th class="text-center">Actions</th>
         </tr>
+    </thead>
+    <tbody class="table-group-divider">
         {% for project in projects %}
         <tr>
-            <td class="text-start">{{ project.project_name }}</td>
-            <td class="text-end">
+            <td class="text-center">{{ project.project_name }}</td>
+            <td class="text-center">
                 {% if project.task_type == 'mtpe' %}
                     {{ project.task_type | upper }}
                 {% else %}
                     {{ project.task_type | capitalize }}
                 {% endif %}
         </td>
-            <td class="text-end">{% if project.hourlywork != 0 %}
+            <td class="text-center">{% if project.hourlywork != 0 %}
                 {{ project.hourlywork }} hours
                 {% else %}
                 <a data-bs-toggle="collapse" href="#collapse{{ project.id }}Detailed" role="button" aria-expanded="false" aria-controls="collapse{{ project.id }}Detailed">
@@ -34,10 +36,10 @@
                 </a>              
                 {% endif %}
             </td>
-            <td class="text-end">{{ project.date_time }}</td>
-            <td class="text-end">{{ project.lsp_name }}</td>
-            <td class="text-end">{{ project.account_name }}</td>
-            <td class="text-end">
+            <td class="text-center">{{ project.date_time }}</td>
+            <td class="text-center">{{ project.lsp_name }}</td>
+            <td class="text-center">{{ project.account_name }}</td>
+            <td class="text-center">
                 <form class="d-inline" action="/edit_project">
                     <input type="hidden" name="project_id" value="{{ project.id }}">
                     <button type="submit" class="btn btn-outline-primary btn-sm">Edit</button>
@@ -106,25 +108,24 @@
         </div>
 
         {% endfor %}
-    </thead>
+    </tbody>
 </table>
-<form class="text-end" action="/sort">
-    <select class="form-select w-auto d-inline align-middle" name="sort" id="sort">
-        <option value="none">Sort by</option>
-        <option value="project_name">Name</option>
-        <option value="task_type">Task type</option>
-        <option value="weighted_words">Word count</option>
-        <option value="date_time">Due date</option>
-        <option value="lsp_name">LSP</option>
-        <option value="account_name">Account</option>
-    </select>
-    <select class="form-select w-auto d-inline align-middle" name="direction" id="direction">
-        <option value="asc">Ascending</option>
-        <option value="desc">Descending</option>
-    </select>
-    <button type="submit" class="btn btn-primary d-inline align-middle">Sort</button>
-</form>
 
-
+    <form class="text-end" action="/sort">
+        <select class="form-select w-auto d-inline align-middle" name="sort" id="sort">
+            <option value="none">Sort by</option>
+            <option value="project_name">Name</option>
+            <option value="task_type">Task type</option>
+            <option value="weighted_words">Word count</option>
+            <option value="date_time">Due date</option>
+            <option value="lsp_name">LSP</option>
+            <option value="account_name">Account</option>
+        </select>
+        <select class="form-select w-auto d-inline align-middle" name="direction" id="direction">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+        <button type="submit" class="btn btn-primary d-inline align-middle">Sort</button>
+    </form>
     
 {% endblock %}

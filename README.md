@@ -62,9 +62,9 @@ This application uses an SQLite database (ltt.db) with the following tables:
 
 **Projects**: This table stores project data, such as word count, due date, project name, etc.
 
-**LSPs**: This table stores LSPs added by the user. Added items are linked with user, meaning only they can access them.
+**LSPs**: This table stores LSPs added by the user. Added items are linked to user, meaning only they can access them.
 
-**Accounts**: This table stores accounts added by the user. Added items are linked with user, meaning only they can access them.
+**Accounts**: This table stores accounts added by the user. Added items are linked to user, meaning only they can access them.
 
 ## Technologies Used
 
@@ -127,7 +127,7 @@ You can access the app at http://127.0.0.1:5000/
 - Detail task types
 - Provide pie charts to present projects in a more visual and intuitive way
 - Support for more analysis breakdowns (e.g., the ability to create different fuzzy match levels, distinguishing between different exact matches)
-- Automating adding projects through script or extension
+- Automate adding projects through script or extension
 - And more...
 
 ## Acknowledgements
