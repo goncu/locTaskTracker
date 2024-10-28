@@ -1,6 +1,6 @@
 # Localization Task Tracker
 
-**Video link:** TODO
+**Video link:** https://youtu.be/mBWflz7Ur_4
 
 ## Introduction
 
@@ -10,7 +10,7 @@ Localization Task Tracker is a Flask app for freelance localization professional
 
 ### User Authentication
 
-**Login**: Users can log in with a username and password. Passwords are securely hashed using werkzeug.security's generate_password_hash.
+**Login**: Users can log in with a username and password. Passwords are securely hashed using werkzeug.security's `generate_password_hash` function.
 
 ![Alt text](assets/login.png)
 
