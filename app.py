@@ -313,6 +313,3 @@ def edit_project():
             flash("Cannot edit this project!")
             return redirect("/")
 
-# Debug mode
-if __name__ == "__main__":
-    app.run(debug=True)
