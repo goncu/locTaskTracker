@@ -1,5 +1,7 @@
 # Localization Task Tracker
 
+**Video link:** TODO
+
 ## Introduction
 
 Localization Task Tracker is a Flask app for freelance localization professionals to track their tasks. Users can add Language Service Providers (LSPs) they work with and accounts they work on, and create, edit, complete and delete projects.
@@ -64,6 +66,12 @@ This application uses an SQLite database (ltt.db) with the following tables:
 
 **Accounts**: This table stores accounts added by the user. Added items are linked with user, meaning only they can access them.
 
+## Technologies Used
+
+- [**Flask**](https://flask.palletsprojects.com/en/stable/)
+- [**Bootstrap**](https://getbootstrap.com/)
+- [**SQLite**](https://www.sqlite.org/index.html)
+
 ## Running the App
 
 **1.** Clone the repository:
@@ -98,3 +106,32 @@ venv\Scripts\activate
 ```
 pip install -r requirements.txt
 ```
+
+**5.** Set up the database:
+
+```
+sqlite3 ltt.db < schema.sql
+```
+
+**6.** Run the app:
+
+```
+flask run
+```
+
+You can access the app at http://127.0.0.1:5000/
+
+## Future Improvements
+
+- Add a rate feature to track earnings
+- Detail task types
+- Provide pie charts to present projects in a more visual and intuitive way
+- Support for more analysis breakdowns (e.g., the ability to create different fuzzy match levels, distinguishing between different exact matches)
+- Automating adding projects through script or extension
+- And more...
+
+## Acknowledgements
+
+Some functions, such as `login`, `register`, and `login_required`, were adapted from the CS50 Finance problem set.
+
+This project was developed as part of the [CS50x](https://cs50.harvard.edu/x/2024/) final project. Special thanks to the **CS50 team** for their exceptional course and support!
