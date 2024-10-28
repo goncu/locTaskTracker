@@ -74,6 +74,12 @@ This application uses an SQLite database (ltt.db) with the following tables:
 
 ## Running the App
 
+### Requirements
+
+Python and SQLite must be installed to run the app.
+
+### Steps
+
 **1.** Clone the repository:
 
 ```
@@ -104,7 +110,7 @@ venv\Scripts\activate
 **4.** Install required dependencies:
 
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 **5.** Set up the database:
