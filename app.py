@@ -129,34 +129,34 @@ def add_project():
     today = datetime.today().strftime('%Y-%m-%d')
     if request.method == "POST":
         # Storing form data into variables
-        lspname = request.form.get("lspname")
-        accountname = request.form.get("accountname")
-        projectname = request.form.get("projectname")
+        lsp_name = request.form.get("lspname")
+        account_name = request.form.get("accountname")
+        project_name = request.form.get("projectname")
         date = request.form.get("date")
         time = request.form.get("time")
         date_time = f"{date} {time}"
-        tasktype  = request.form.get("tasktype")     
-        newwords = request.form.get("newwords")
-        highfuzzy = request.form.get("highfuzzy")
-        lowfuzzy = request.form.get("lowfuzzy")
-        hundredpercent = request.form.get("hundredpercent")
-        hourlywork = request.form.get("hourlywork")
-        if tasktype == "editing":
-            weighted_words = int(newwords) + int(highfuzzy) + int(lowfuzzy) + int(hundredpercent)
+        task_type  = request.form.get("tasktype")     
+        new_words = request.form.get("newwords")
+        high_fuzzy = request.form.get("highfuzzy")
+        low_fuzzy = request.form.get("lowfuzzy")
+        hundred_percent = request.form.get("hundredpercent")
+        hourly_work = request.form.get("hourlywork")
+        if task_type == "editing":
+            weighted_words = int(new_words) + int(high_fuzzy) + int(low_fuzzy) + int(hundred_percent)
         else:
-            weighted_words = round((int(newwords) if tasktype != "mtpe" else int(newwords) * 0.8) + (int(highfuzzy) * 0.4) + (int(lowfuzzy) * 0.6) + (int(hundredpercent) * 0.25))
+            weighted_words = round((int(new_words) if task_type != "mtpe" else int(new_words) * 0.8) + (int(high_fuzzy) * 0.4) + (int(low_fuzzy) * 0.6) + (int(hundred_percent) * 0.25))
         
         #Checking input validity
-        if lspname == "none":
+        if lsp_name == "none":
             flash("Please select an LSP!")
             return redirect("/add_project")
-        if  accountname == "none":
+        if  account_name == "none":
             flash("Please select an account!")
             return redirect("/add_project")
-        if tasktype == "none":
+        if task_type == "none":
             flash("Please select a task type!")
             return redirect("/add_project")
-        if not projectname:
+        if not project_name:
             flash("Please enter a project name!")
             return redirect("/add_project")
         if not date:
@@ -165,7 +165,7 @@ def add_project():
         if not time:
             flash("Please select a time!")
             return redirect("/add_project")
-        for num in [newwords, highfuzzy, lowfuzzy, hundredpercent, hourlywork]:
+        for num in [new_words, high_fuzzy, low_fuzzy, hundred_percent, hourly_work]:
             try:
                 val = int(num)
                 if val < 0:
@@ -174,7 +174,7 @@ def add_project():
             except ValueError:
                 flash("Please enter a valid number!")
                 return redirect("/add_project")
-        db.execute("INSERT INTO projects (user_id, lsp_name, account_name, project_name, date_time, task_type, new_words, high_fuzzy, low_fuzzy, hundred_percent, hourlywork, weighted_words, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", user_id, lspname, accountname, projectname, date_time, tasktype, newwords, highfuzzy, lowfuzzy, hundredpercent, hourlywork, weighted_words, 'no')
+        db.execute("INSERT INTO projects (user_id, lsp_name, account_name, project_name, date_time, task_type, new_words, high_fuzzy, low_fuzzy, hundred_percent, hourlywork, weighted_words, completed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", user_id, lsp_name, account_name, project_name, date_time, task_type, new_words, high_fuzzy, low_fuzzy, hundred_percent, hourly_work, weighted_words, 'no')
         flash("Project added!")
         return redirect("/")
     else:
@@ -250,36 +250,36 @@ def sort():
 def edit_project():
     if request.method == "POST":
         # Storing form data into variables
-        projectId = request.form.get("project_id")
-        lspname = request.form.get("lspname")
-        accountname = request.form.get("accountname")
-        projectname = request.form.get("projectname")
+        project_id = request.form.get("project_id")
+        lsp_name = request.form.get("lspname")
+        account_name = request.form.get("accountname")
+        project_name = request.form.get("projectname")
         date = request.form.get("date")
         time = request.form.get("time")
         date_time = f"{date} {time}"
-        tasktype  = request.form.get("tasktype")     
-        newwords = request.form.get("newwords")
-        highfuzzy = request.form.get("highfuzzy")
-        lowfuzzy = request.form.get("lowfuzzy")
-        hundredpercent = request.form.get("hundredpercent")
-        hourlywork = request.form.get("hourlywork")
+        task_type  = request.form.get("tasktype")     
+        new_words = request.form.get("newwords")
+        high_fuzzy = request.form.get("highfuzzy")
+        low_fuzzy = request.form.get("lowfuzzy")
+        hundred_percent = request.form.get("hundredpercent")
+        hourly_work = request.form.get("hourlywork")
 
-        if tasktype == "editing":
-            weighted_words = int(newwords) + int(highfuzzy) + int(lowfuzzy) + int(hundredpercent)
+        if task_type == "editing":
+            weighted_words = int(new_words) + int(high_fuzzy) + int(low_fuzzy) + int(hundred_percent)
         else:
-            weighted_words = round((int(newwords) if tasktype != "mtpe" else int(newwords) * 0.8) + (int(highfuzzy) * 0.4) + (int(lowfuzzy) * 0.6) + (int(hundredpercent) * 0.25))
+            weighted_words = round((int(new_words) if task_type != "mtpe" else int(new_words) * 0.8) + (int(high_fuzzy) * 0.4) + (int(low_fuzzy) * 0.6) + (int(hundred_percent) * 0.25))
         
         #Checking input validity
-        if lspname == "none":
+        if lsp_name == "none":
             flash("Please select an LSP!")
             return redirect("/add_project")
-        if  accountname == "none":
+        if  account_name == "none":
             flash("Please select an account!")
             return redirect("/add_project")
-        if tasktype == "none":
+        if task_type == "none":
             flash("Please select a task type!")
             return redirect("/add_project")
-        if not projectname:
+        if not project_name:
             flash("Please enter a project name!")
             return redirect("/add_project")
         if not date:
@@ -288,7 +288,7 @@ def edit_project():
         if not time:
             flash("Please select a time!")
             return redirect("/add_project")
-        for num in [newwords, highfuzzy, lowfuzzy, hundredpercent, hourlywork]:
+        for num in [new_words, high_fuzzy, low_fuzzy, hundred_percent, hourly_work]:
             try:
                 val = int(num)
                 if val < 0:
@@ -297,7 +297,7 @@ def edit_project():
             except ValueError:
                 flash("Please enter a valid number!")
                 return redirect("/add_project")
-        db.execute("UPDATE projects SET lsp_name = ?, account_name = ?, project_name = ?, date_time = ?, task_type = ?, new_words = ?, high_fuzzy = ?, low_fuzzy = ?, hundred_percent = ?, hourlywork = ?, weighted_words = ?, completed = ? WHERE id = ?", lspname, accountname, projectname, date_time, tasktype, newwords, highfuzzy, lowfuzzy, hundredpercent, hourlywork, weighted_words, 'no', projectId)
+        db.execute("UPDATE projects SET lsp_name = ?, account_name = ?, project_name = ?, date_time = ?, task_type = ?, new_words = ?, high_fuzzy = ?, low_fuzzy = ?, hundred_percent = ?, hourlywork = ?, weighted_words = ?, completed = ? WHERE id = ?", lsp_name, account_name, project_name, date_time, task_type, new_words, high_fuzzy, low_fuzzy, hundred_percent, hourly_work, weighted_words, 'no', project_id)
         flash("Project edited!")
         return redirect("/")
     else:
